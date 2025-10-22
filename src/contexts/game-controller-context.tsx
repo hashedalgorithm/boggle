@@ -125,8 +125,10 @@ export const useGameContextUtils = () => {
   const getPlayer = (playerId: string) =>
     Object.values(state.players).find((player) => player.playerId === playerId);
 
+  const getPlayers = () => Object.values(state.players);
   return {
     getPlayer,
+    getPlayers,
   };
 };
 
