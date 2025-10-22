@@ -109,8 +109,8 @@ export const useBoogleGridContextUtils = () => {
   const getWordWithPath = (): string => {
     let tracedWord = "";
 
-    for (const path of state.path) {
-      tracedWord += tracedWord + state.dices[path].diceValue;
+    for (const diceId of state.path) {
+      tracedWord += state.dices[diceId].diceValue;
     }
 
     return tracedWord;

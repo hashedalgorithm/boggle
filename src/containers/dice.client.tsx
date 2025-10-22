@@ -17,7 +17,6 @@ const Dice = ({
   const handleOnMouseEnter: MouseEventHandler<HTMLDivElement> = () => {
     if (!state.isTracing) return;
 
-    console.log(diceId);
     dispatch({
       type: "update-dice-status",
       diceId,
