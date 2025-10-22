@@ -1,7 +1,7 @@
-import React from "react";
+import PlayScreen from "@/screens/play-screen.client";
 
 const PlayPage = () => {
-  return <div>PlayPage</div>;
+  return <PlayScreen />;
 };
 
 export default PlayPage;

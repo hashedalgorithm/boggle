@@ -5,3 +5,10 @@ export type TPlayer = {
   playerStatus: "active" | "idle";
   playerWordsFound: string[];
 };
+
+export type TDice = {
+  diceId: string;
+  dicePosition: number;
+  diceLabel: string;
+  diceValue: string;
+};
