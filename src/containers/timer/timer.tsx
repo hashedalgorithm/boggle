@@ -14,9 +14,7 @@ type TimerProps = {
 const Timer = ({ minutes, seconds, className, isTimerEnded }: TimerProps) => {
   useEffect(() => {
     if (seconds === 30 && minutes === 0) {
-      toast.warning(
-        "Time is running out! Just 30 seconds left to finish your booking."
-      );
+      toast.warning("Time is running out! Just 30 seconds left.");
     }
   }, [minutes, seconds]);
   return (

@@ -1,18 +1,22 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGameContextUtils } from "@/contexts/game-controller-context";
 import { TPlayer } from "@/types/core";
 
 type ScoreBoardPlayerCardProps = Pick<
   TPlayer,
-  "playerName" | "playerScore" | "playerStatus"
+  "playerName" | "playerStatus" | "playerId"
 >;
 
 const ScoreBoardPlayerCard = ({
+  playerId,
   playerName,
-  playerScore,
   playerStatus,
 }: ScoreBoardPlayerCardProps) => {
+  const { getPlayerScore } = useGameContextUtils();
+
+  const playerScore = getPlayerScore(playerId);
   return (
     <div className="w-80 flex justify-between gap-8 items-center py-4 px-4 hover:bg-accent/40 hover:rounded-md">
       <div className="flex gap-4 items-center">
