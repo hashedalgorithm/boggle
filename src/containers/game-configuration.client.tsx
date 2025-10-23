@@ -13,7 +13,15 @@ import {
   useGameContext,
 } from "@/contexts/game-controller-context";
 import { languages } from "@/utils/data";
-import { Minus, PlayCircle, Plus } from "lucide-react";
+import {
+  Globe,
+  Grid,
+  HourglassIcon,
+  Minus,
+  PlayCircle,
+  Plus,
+  Users,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MouseEventHandler } from "react";
 import { toast } from "sonner";
@@ -101,7 +109,10 @@ const GameConfiguration = () => {
       <p className="muted mb-6">Choose your configuration and start playing!</p>
       <div className="flex flex-col gap-4 w-full">
         <div className="flex w-full gap-8 items-center justify-between">
-          <p>Number of players</p>
+          <div className="flex gap-2 items-center">
+            <Users className="w-4 h-auto" />
+            <p>Number of players</p>
+          </div>
           <ButtonGroup>
             <Button variant={"secondary"}>
               <p>{Object.keys(state.players).length}</p>
@@ -112,7 +123,10 @@ const GameConfiguration = () => {
           </ButtonGroup>
         </div>
         <div className="flex w-full gap-8 items-center justify-between">
-          <p>Language</p>
+          <div className="flex gap-2 items-center">
+            <Globe className="w-4 h-auto" />
+            <p>Language</p>
+          </div>
           <ButtonGroup>
             <Select
               value={state.language}
@@ -141,7 +155,10 @@ const GameConfiguration = () => {
           </ButtonGroup>
         </div>
         <div className="flex w-full gap-8 items-center justify-between">
-          <p>Time per round</p>
+          <div className="flex gap-2 items-center">
+            <HourglassIcon className="w-4 h-auto" />
+            <p>Time per round</p>
+          </div>
           <ButtonGroup>
             <Button
               variant={"secondary"}
@@ -160,7 +177,10 @@ const GameConfiguration = () => {
         </div>
         <Separator />
         <div className="flex w-full gap-8 items-center justify-between">
-          <p>Grid Size</p>
+          <div className="flex gap-2 items-center">
+            <Grid className="w-4 h-auto" />
+            <p>Grid Size</p>
+          </div>
           <div className="flex flex-col gap-2">
             <ButtonGroup>
               <Button
