@@ -18,7 +18,7 @@ const Timer = ({ minutes, seconds, className, isTimerEnded }: TimerProps) => {
     }
   }, [minutes, seconds]);
   return (
-    <div className={cn("w-full rounded-lg z-100 boxshadow", className)}>
+    <div className={cn("w-full rounded-lg", className)}>
       <div
         className={cn(
           "py-2 w-full h-full flex justify-center items-center rounded-lg gap-4"
@@ -27,7 +27,9 @@ const Timer = ({ minutes, seconds, className, isTimerEnded }: TimerProps) => {
         {!isTimerEnded ? (
           <>
             <Spinner />
-            <p>{`Time Remaining - ${minutes}:${seconds}`}</p>
+            <p className="font-medium">{`Time Remaining - ${
+              minutes > 10 ? minutes : `0${minutes}`
+            }:${seconds > 10 ? seconds : `0${seconds}`}`}</p>
           </>
         ) : (
           <p>Times up!</p>

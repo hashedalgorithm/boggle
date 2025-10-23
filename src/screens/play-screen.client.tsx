@@ -30,7 +30,7 @@ const PlayScreen = () => {
 
   return (
     <section>
-      <Timer className="mb-8" {...timerProps} />
+      <Timer className="mb-20" {...timerProps} />
       <BoogleGrid />
     </section>
   );
