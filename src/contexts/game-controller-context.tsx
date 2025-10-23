@@ -53,6 +53,10 @@ type Actions =
       type: "decrease-columns";
     }
   | {
+      type: "set-active-player";
+      playerId: string;
+    }
+  | {
       type: "end-game";
     }
   | {
@@ -65,6 +69,7 @@ type GameControllerState = {
   status: "active" | "idle";
   players: Record<string, TPlayer>;
   time: number;
+  currentPlayerId: string | null;
   gridSize: {
     rows: number;
     columns: number;
@@ -89,6 +94,7 @@ const getInitialGameState = () => {
       },
     },
     status: "idle",
+    currentPlayerId: uid,
     time: 3,
     gridSize: {
       rows: 4,
@@ -222,6 +228,11 @@ const reducer = (
           columns: prevstate.gridSize.columns - 1,
         },
       };
+    case "set-active-player":
+      return {
+        ...prevstate,
+        currentPlayerId: actions.playerId,
+      };
     default:
       return prevstate;
   }
@@ -232,10 +243,8 @@ export const useGameContext = () => useContext(RawContext);
 export const useGameContextUtils = () => {
   const { state, dispatch } = useGameContext();
 
-  const getActivePlayer = () =>
-    Object.values(state.players).find(
-      (player) => player.playerStatus === "active"
-    );
+  const getActivePlayer = (playerId: string) =>
+    Object.values(state.players).find((player) => player.playerId === playerId);
 
   const getPlayer = (playerId: string) =>
     Object.values(state.players).find((player) => player.playerId === playerId);

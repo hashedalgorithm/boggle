@@ -33,7 +33,11 @@ const BoogleGrid = () => {
   const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = () => {
     if (!state.isTracing) return;
 
-    const activePlayer = getActivePlayer();
+    if (!gameConfig.currentPlayerId) {
+      toast.error("Cant find active player!");
+      return;
+    }
+    const activePlayer = getActivePlayer(gameConfig.currentPlayerId);
 
     if (!activePlayer) {
       toast.error("Cant find active player!");
