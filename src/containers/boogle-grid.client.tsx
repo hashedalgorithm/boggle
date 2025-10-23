@@ -18,7 +18,7 @@ const BoogleGrid = () => {
   const handleOnMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
     if (state.isTracing) return;
 
-    const diceId = getAttribute<HTMLDivElement, MouseEvent>(e, "data-diceId");
+    const diceId = getAttribute<HTMLDivElement, MouseEvent>(e, "data-diceid");
     if (!diceId) return;
 
     dispatch({

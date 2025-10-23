@@ -33,7 +33,7 @@ const Dice = ({
           "border-destructive": diceStatus === "not-available",
         }
       )}
-      data-diceId={diceId}
+      data-diceid={diceId}
       data-value={diceValue}
       data-position={dicePosition}
       onMouseEnter={handleOnMouseEnter}
