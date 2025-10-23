@@ -65,7 +65,7 @@ const getInitialGameState = () => {
         playerId: uid,
         playerName: "Player 1",
         playerScore: 0,
-        playerStatus: "idle",
+        playerStatus: "active",
         playerWordsFound: [],
       },
     },
@@ -147,9 +147,9 @@ const reducer = (
         time: prevstate.time - 1 > 1 ? prevstate.time - 1 : 1,
       };
     case "start-game":
-      return prevstate;
+      return { ...prevstate, status: "active" };
     case "end-game":
-      return prevstate;
+      return { ...prevstate, status: "idle" };
     default:
       return prevstate;
   }
