@@ -30,7 +30,7 @@ const BoogleGrid = () => {
       diceId,
     });
   };
-  const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = () => {
+  const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = async () => {
     if (!state.isTracing) return;
 
     if (!gameConfig.currentPlayerId) {
@@ -44,7 +44,7 @@ const BoogleGrid = () => {
       return;
     }
 
-    addWordToPlayerInventory(activePlayer.playerId, getWordWithPath());
+    await addWordToPlayerInventory(activePlayer.playerId, getWordWithPath());
 
     dispatch({
       type: "end-tracing",

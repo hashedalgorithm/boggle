@@ -1,6 +1,7 @@
 "use client";
 
 import { uuid } from "@/lib/utils";
+import { validateWord } from "@/server/word-api";
 import { TPlayer } from "@/types/core";
 
 import {
@@ -263,9 +264,15 @@ export const useGameContextUtils = () => {
 
   const getPlayers = () => Object.values(state.players);
 
-  const addWordToPlayerInventory = (playerId: string, word: string) => {
+  const addWordToPlayerInventory = async (playerId: string, word: string) => {
     if (word.length < 3) {
       toast.warning("Word length should be minimum 3!");
+      return;
+    }
+
+    const resp = await validateWord(state.language, word);
+    if (!resp.status) {
+      toast.warning("Not a valid word! Try again!");
       return;
     }
 
