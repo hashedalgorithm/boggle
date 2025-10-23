@@ -21,7 +21,7 @@ const Timer = ({ minutes, seconds, className, isTimerEnded }: TimerProps) => {
     <div className={cn("w-full rounded-lg", className)}>
       <div
         className={cn(
-          "py-2 w-full h-full flex justify-center items-center rounded-lg gap-4"
+          "py-2 w-full flex justify-center items-center rounded-lg gap-4"
         )}
       >
         {!isTimerEnded ? (

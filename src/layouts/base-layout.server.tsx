@@ -6,7 +6,7 @@ type BaseLayoutProps = PropsWithChildren;
 const BaseLayout = ({ children }: BaseLayoutProps) => {
   return (
     <div className="w-dvw h-dvh relative px-8 py-4">
-      <ThemeToggler className="top-8 right-8 fixed" />
+      <ThemeToggler className="top-8 right-8 fixed z-50" />
       {children}
     </div>
   );
