@@ -6,7 +6,7 @@ import {
 } from "@/contexts/boogle-grid-context";
 import { cn } from "@/lib/utils";
 import { TDice } from "@/types/core";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useMemo } from "react";
 import { toast } from "sonner";
 
 type DiceProps = TDice;
@@ -18,13 +18,42 @@ const Dice = ({
   diceStatus,
 }: DiceProps) => {
   const { state, dispatch } = useBoogleGridContext();
-  const { checkIsDiceAlreadyTraced } = useBoogleGridContextUtils();
+  const { checkIsDiceAlreadyTraced, getAllowedPositions, getDice } =
+    useBoogleGridContextUtils();
+
+  const isDiceAlreadyTraced = checkIsDiceAlreadyTraced(diceId);
+
+  const possibleNextMoves = useMemo(() => {
+    if (!state.currentDiceId) return [];
+
+    const currentDice = getDice(state.currentDiceId);
+
+    if (!currentDice) return [];
+
+    return getAllowedPositions(currentDice.dicePosition);
+  }, [getAllowedPositions, getDice, state.currentDiceId]);
+
+  const isPossibleMoveFromCurrentDice = useMemo(() => {
+    if (state.currentDiceId === diceId) return false;
+    if (isDiceAlreadyTraced) return false;
+
+    return !!possibleNextMoves.find(
+      (possibleMove) =>
+        possibleMove.x === dicePosition.x && possibleMove.y === dicePosition.y
+    );
+  }, [
+    diceId,
+    dicePosition.x,
+    dicePosition.y,
+    isDiceAlreadyTraced,
+    possibleNextMoves,
+    state.currentDiceId,
+  ]);
+
   const handleOnMouseEnter: MouseEventHandler<HTMLDivElement> = () => {
     if (!state.isTracing) return;
 
-    const isTraced = checkIsDiceAlreadyTraced(diceId);
-
-    if (isTraced) {
+    if (isDiceAlreadyTraced) {
       toast.warning("Move not allowed!");
       dispatch({
         type: "end-tracing",
@@ -46,6 +75,7 @@ const Dice = ({
         {
           "border-amber-400": diceStatus === "active",
           "border-destructive": diceStatus === "not-available",
+          "border-emerald-500/50": isPossibleMoveFromCurrentDice,
         }
       )}
       data-diceid={diceId}

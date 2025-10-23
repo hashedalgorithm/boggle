@@ -1,11 +1,13 @@
 "use client";
 
+import { useGameContext } from "@/contexts/game-controller-context";
 import { uuid } from "@/lib/utils";
 import { TDice, TDiceStatus } from "@/types/core";
 import {
   createContext,
   Dispatch,
   PropsWithChildren,
+  useCallback,
   useContext,
   useReducer,
 } from "react";
@@ -29,37 +31,47 @@ type Actions =
 type BoogleGridState = {
   dices: Record<string, TDice>;
   isTracing: boolean;
-  recentDiceId: string | null;
+  currentDiceId: string | null;
   path: string[];
 };
 type BoogleGridContextState = {
   state: BoogleGridState;
   dispatch: Dispatch<Actions>;
 };
+type TCoordinates = {
+  x: number;
+  y: number;
+};
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWX";
-const getInitialValue = () =>
+const getInitialValue = (rows: number, cols: number) =>
   ({
-    dices: Array.from(Array(16).keys()).reduce((accumulator, value) => {
-      const randomIndex = Math.floor(Math.random() * alphabets.length);
-      const uid = uuid();
-      accumulator[uid] = {
-        diceId: uid,
-        diceLabel: alphabets[randomIndex],
-        dicePosition: value,
-        diceValue: alphabets[randomIndex].toLowerCase(),
-        diceStatus: "idle",
-      } satisfies TDice;
-      return accumulator;
-    }, {} as Record<string, TDice>),
-
+    dices: Array.from(Array(rows * cols).keys()).reduce(
+      (accumulator, value) => {
+        const randomIndex = Math.floor(Math.random() * alphabets.length);
+        const uid = uuid();
+        accumulator[uid] = {
+          diceId: uid,
+          diceLabel: alphabets[randomIndex],
+          dicePosition: {
+            x: Math.floor(value / rows),
+            y: value % cols,
+            position: value,
+          },
+          diceValue: alphabets[randomIndex].toLowerCase(),
+          diceStatus: "idle",
+        } satisfies TDice;
+        return accumulator;
+      },
+      {} as Record<string, TDice>
+    ),
     isTracing: false,
-    recentDiceId: null,
+    currentDiceId: null,
     path: [],
   } satisfies BoogleGridState);
 
 const RawContext = createContext<BoogleGridContextState>({
-  state: getInitialValue(),
+  state: getInitialValue(4, 4),
   dispatch: () => {},
 });
 
@@ -68,6 +80,76 @@ export const useBoogleGridContext = () => useContext(RawContext);
 export const useBoogleGridContextUtils = () => {
   const { state } = useBoogleGridContext();
 
+  const getDice = useCallback(
+    (diceId: string) =>
+      Object.values(state.dices).find((dice) => dice.diceId === diceId),
+    [state.dices]
+  );
+
+  const getAllowedPositions = useCallback((position: TDice["dicePosition"]) => {
+    const allowedTraceableAdajacentPositions: Array<TCoordinates> = [];
+
+    // (x-1)(y-1)
+    const topLeft = {
+      x: position.x - 1,
+      y: position.y - 1,
+    } satisfies TCoordinates;
+
+    // (x-1)(y)
+    const topCenter = {
+      x: position.x - 1,
+      y: position.y,
+    } satisfies TCoordinates;
+
+    // (x-1)(y+1)
+    const topRight = {
+      x: position.x - 1,
+      y: position.y + 1,
+    } satisfies TCoordinates;
+
+    // (x)(y-1)
+    const left = { x: position.x, y: position.y - 1 } satisfies TCoordinates;
+
+    // (x)(y+1)
+    const right = { x: position.x, y: position.y + 1 } satisfies TCoordinates;
+
+    // (x-1)(y-1)
+    const bottomLeft = {
+      x: position.x + 1,
+      y: position.y - 1,
+    } satisfies TCoordinates;
+
+    // (x-1)(y)
+    const bottomCenter = {
+      x: position.x + 1,
+      y: position.y,
+    } satisfies TCoordinates;
+
+    // (x+1)(y+1)
+    const bottomRight = {
+      x: position.x + 1,
+      y: position.y + 1,
+    } satisfies TCoordinates;
+
+    if (topLeft.x >= 0 && topLeft.y >= 0)
+      allowedTraceableAdajacentPositions.push(topLeft);
+    if (topCenter.x >= 0 && topCenter.y >= 0)
+      allowedTraceableAdajacentPositions.push(topCenter);
+    if (topRight.x >= 0 && topRight.y >= 0)
+      allowedTraceableAdajacentPositions.push(topRight);
+    if (left.x >= 0 && left.y >= 0)
+      allowedTraceableAdajacentPositions.push(left);
+    if (right.x >= 0 && right.y >= 0)
+      allowedTraceableAdajacentPositions.push(right);
+    if (bottomLeft.x >= 0 && bottomLeft.y >= 0)
+      allowedTraceableAdajacentPositions.push(bottomLeft);
+    if (bottomCenter.x >= 0 && bottomCenter.y >= 0)
+      allowedTraceableAdajacentPositions.push(bottomCenter);
+    if (bottomRight.x >= 0 && bottomRight.y >= 0)
+      allowedTraceableAdajacentPositions.push(bottomRight);
+
+    return allowedTraceableAdajacentPositions;
+  }, []);
 
   const checkIsDiceAlreadyTraced = (diceId: string) => {
     return state.path.includes(diceId);
@@ -84,7 +166,8 @@ export const useBoogleGridContextUtils = () => {
   };
 
   return {
-    checkIsDiceTraceable,
+    getDice,
+    getAllowedPositions,
     checkIsDiceAlreadyTraced,
     getWordWithPath,
   };
@@ -107,7 +190,7 @@ const reducer = (
         },
         isTracing: true,
         path: [actions.diceId],
-        recentDiceId: actions.diceId,
+        currentDiceId: actions.diceId,
       };
     case "end-tracing":
       const transformedDices = Object.values(prevstate.dices).reduce(
@@ -127,6 +210,7 @@ const reducer = (
         ...prevstate,
         dices: transformedDices,
         isTracing: false,
+        currentDiceId: null,
         path: [],
       };
     case "update-dice-status":
@@ -140,7 +224,7 @@ const reducer = (
           },
         },
         path: [...prevstate.path, actions.diceId],
-        recentDiceId: actions.diceId,
+        currentDiceId: actions.diceId,
       };
     default:
       return prevstate;
