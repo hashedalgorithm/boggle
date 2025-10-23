@@ -57,6 +57,10 @@ type Actions =
       playerId: string;
     }
   | {
+      type: "change-language";
+      language: GameControllerState["language"];
+    }
+  | {
       type: "end-game";
     }
   | {
@@ -65,7 +69,7 @@ type Actions =
 
 type GameControllerProviderProps = PropsWithChildren;
 
-type GameControllerState = {
+export type GameControllerState = {
   status: "active" | "idle";
   players: Record<string, TPlayer>;
   time: number;
@@ -74,6 +78,7 @@ type GameControllerState = {
     rows: number;
     columns: number;
   };
+  language: "en" | "de" | "fr";
 };
 
 type GameControllerContextState = {
@@ -100,6 +105,7 @@ const getInitialGameState = () => {
       rows: 4,
       columns: 4,
     },
+    language: "en",
   } satisfies GameControllerState;
 };
 const RawContext = createContext<GameControllerContextState>({
@@ -232,6 +238,12 @@ const reducer = (
       return {
         ...prevstate,
         currentPlayerId: actions.playerId,
+      };
+
+    case "change-language":
+      return {
+        ...prevstate,
+        language: actions.language,
       };
     default:
       return prevstate;

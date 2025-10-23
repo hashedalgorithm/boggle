@@ -1,6 +1,9 @@
 "use client";
 
-import { useGameContext } from "@/contexts/game-controller-context";
+import {
+  GameControllerState,
+  useGameContext,
+} from "@/contexts/game-controller-context";
 import { uuid } from "@/lib/utils";
 import { TDice, TDiceStatus } from "@/types/core";
 import {
@@ -43,22 +46,33 @@ type TCoordinates = {
   y: number;
 };
 
-const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWX";
-const getInitialValue = (rows: number, cols: number) =>
+const alphabets: Record<GameControllerState["language"], string> = {
+  en: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  de: "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖẞ",
+  fr: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+};
+
+const getInitialValue = (
+  language: GameControllerState["language"],
+  rows: number,
+  cols: number
+) =>
   ({
     dices: Array.from(Array(rows * cols).keys()).reduce(
       (accumulator, value) => {
-        const randomIndex = Math.floor(Math.random() * alphabets.length);
+        const randomIndex = Math.floor(
+          Math.random() * alphabets[language].length
+        );
         const uid = uuid();
         accumulator[uid] = {
           diceId: uid,
-          diceLabel: alphabets[randomIndex],
+          diceLabel: alphabets[language][randomIndex],
           dicePosition: {
             x: Math.floor(value / rows),
             y: value % cols,
             position: value,
           },
-          diceValue: alphabets[randomIndex].toLowerCase(),
+          diceValue: alphabets[language][randomIndex].toLowerCase(),
           diceStatus: "idle",
         } satisfies TDice;
         return accumulator;
@@ -71,7 +85,7 @@ const getInitialValue = (rows: number, cols: number) =>
   } satisfies BoogleGridState);
 
 const RawContext = createContext<BoogleGridContextState>({
-  state: getInitialValue(4, 4),
+  state: getInitialValue("en", 4, 4),
   dispatch: () => {},
 });
 
@@ -235,7 +249,11 @@ const BoogleGridProvider = ({ children }: BoogleGridProviderProps) => {
   const { state: gameConfig } = useGameContext();
   const [state, dispatch] = useReducer(
     reducer,
-    getInitialValue(gameConfig.gridSize.rows, gameConfig.gridSize.columns)
+    getInitialValue(
+      gameConfig.language,
+      gameConfig.gridSize.rows,
+      gameConfig.gridSize.columns
+    )
   );
   return (
     <RawContext.Provider value={{ state, dispatch }}>

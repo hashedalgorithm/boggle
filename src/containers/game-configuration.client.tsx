@@ -1,8 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import GameConfigurationPlayer from "@/containers/game-configuration-player.client";
-import { useGameContext } from "@/contexts/game-controller-context";
+import {
+  GameControllerState,
+  useGameContext,
+} from "@/contexts/game-controller-context";
+import { languages } from "@/utils/data";
 import { Minus, PlayCircle, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MouseEventHandler } from "react";
@@ -79,6 +89,13 @@ const GameConfiguration = () => {
     });
   };
 
+  const handleOnChangeLanguage = (value: GameControllerState["language"]) => {
+    dispatch({
+      type: "change-language",
+      language: value,
+    });
+  };
+
   return (
     <section className="flex justify-center items-center flex-col">
       <p className="muted mb-6">Choose your configuration and start playing!</p>
@@ -92,6 +109,35 @@ const GameConfiguration = () => {
             <Button onClick={handleOnAddPlayer} variant={"secondary"}>
               <Plus />
             </Button>
+          </ButtonGroup>
+        </div>
+        <div className="flex w-full gap-8 items-center justify-between">
+          <p>Language</p>
+          <ButtonGroup>
+            <Select
+              value={state.language}
+              onValueChange={handleOnChangeLanguage}
+            >
+              <SelectTrigger className="font-mono">
+                {
+                  languages.find(
+                    (language) => language.value === state.language
+                  )?.label
+                }
+              </SelectTrigger>
+              <SelectContent className="min-w-24">
+                {languages.map((language) => (
+                  <SelectItem
+                    key={`game-configuration.client.languages.language.${language.value}`}
+                    value={language.value}
+                  >
+                    <span className="text-muted-foreground">
+                      {language.label}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </ButtonGroup>
         </div>
         <div className="flex w-full gap-8 items-center justify-between">

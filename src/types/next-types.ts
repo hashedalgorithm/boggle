@@ -29,3 +29,8 @@ export type NextError = {
   error: Error & { digest?: string };
   reset: () => void;
 };
+
+export type TSelectOption = {
+  label: string;
+  value: string;
+};
