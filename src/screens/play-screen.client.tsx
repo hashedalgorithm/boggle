@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { MouseEventHandler, useMemo } from "react";
 
 const PlayScreen = () => {
+  const { replace } = useRouter();
   const { state, dispatch } = useGameContext();
   const { getActivePlayer } = useGameContextUtils();
 
@@ -28,6 +29,12 @@ const PlayScreen = () => {
     return getActivePlayer(state.currentPlayerId);
   }, [getActivePlayer, state.currentPlayerId]);
 
+  const handleOnClickQuitGame: MouseEventHandler<HTMLButtonElement> = () => {
+    dispatch({
+      type: "end-game",
+    });
+    replace("/results");
+  };
 
   if (state.status === "idle")
     return (
@@ -64,6 +71,15 @@ const PlayScreen = () => {
         </>
       )}
 
+      <div className="flex w-full justify-center mt-10">
+        <Button
+          variant={"destructive"}
+          className=""
+          onClick={handleOnClickQuitGame}
+        >
+          Quit Game!
+        </Button>
+      </div>
     </section>
   );
 };
