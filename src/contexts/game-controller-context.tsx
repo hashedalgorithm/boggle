@@ -42,6 +42,9 @@ type Actions =
     }
   | {
       type: "end-game";
+    }
+  | {
+      type: "play-again";
     };
 
 type GameControllerProviderProps = PropsWithChildren;
@@ -150,6 +153,22 @@ const reducer = (
       return { ...prevstate, status: "active" };
     case "end-game":
       return { ...prevstate, status: "idle" };
+    case "play-again":
+      return {
+        ...prevstate,
+        status: "idle",
+        players: Object.values(prevstate.players).reduce(
+          (accumulator, currentValue) => {
+            accumulator[currentValue.playerId] = {
+              ...currentValue,
+              playerStatus: "active",
+              playerWordsFound: [],
+            };
+            return accumulator;
+          },
+          {} as Record<string, TPlayer>
+        ),
+      };
     default:
       return prevstate;
   }
@@ -164,6 +183,9 @@ export const useGameContextUtils = () => {
     Object.values(state.players).find(
       (player) => player.playerStatus === "active"
     );
+
+  const getPlayer = (playerId: string) =>
+    Object.values(state.players).find((player) => player.playerId === playerId);
 
   const getPlayers = () => Object.values(state.players);
 
@@ -180,10 +202,28 @@ export const useGameContextUtils = () => {
     });
   };
 
+  const getPlayerScore = (playerId: string) => {
+    const player = state.players[playerId];
+
+    if (!player) return 0;
+
+    return player.playerWordsFound.reduce((total, currentValue) => {
+      if (currentValue.length <= 4 && currentValue.length >= 3)
+        return total + 1;
+      if (currentValue.length <= 5) return total + 2;
+      if (currentValue.length <= 6) return total + 3;
+      if (currentValue.length <= 7) return total + 5;
+      if (currentValue.length >= 8) return total + 11;
+      else return total;
+    }, player.playerScore);
+  };
+
   return {
     getPlayers,
     getActivePlayer,
     addWordToPlayerInventory,
+    getPlayerScore,
+    getPlayer,
   };
 };
 
