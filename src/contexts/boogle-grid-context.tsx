@@ -159,6 +159,7 @@ const reducer = (
         ...prevstate,
         dices: transformedDices,
         isTracing: false,
+        path: [],
       };
     case "update-dice-status":
       return {

@@ -5,11 +5,14 @@ import {
   useBoogleGridContext,
   useBoogleGridContextUtils,
 } from "@/contexts/boogle-grid-context";
+import { useGameContextUtils } from "@/contexts/game-controller-context";
 import { getAttribute } from "@/lib/utils";
 import { MouseEventHandler } from "react";
+import { toast } from "sonner";
 
 const BoogleGrid = () => {
   const { state, dispatch } = useBoogleGridContext();
+  const { getActivePlayer, addWordToPlayerInventory } = useGameContextUtils();
   const { getWordWithPath } = useBoogleGridContextUtils();
 
   const handleOnMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -26,7 +29,15 @@ const BoogleGrid = () => {
   const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = () => {
     if (!state.isTracing) return;
 
-    console.log(getWordWithPath());
+    const activePlayer = getActivePlayer();
+
+    if (!activePlayer) {
+      toast.error("Cant find active player!");
+      return;
+    }
+
+    addWordToPlayerInventory(activePlayer.playerId, getWordWithPath());
+
     dispatch({
       type: "end-tracing",
     });

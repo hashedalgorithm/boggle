@@ -10,6 +10,7 @@ import React, {
   useContext,
   useReducer,
 } from "react";
+import { toast } from "sonner";
 
 type Actions =
   | {
@@ -24,6 +25,11 @@ type Actions =
       type: "upate-player-name";
       playerId: string;
       playerName: string;
+    }
+  | {
+      type: "add-word";
+      word: string;
+      playerId: string;
     }
   | {
       type: "start-game";
@@ -108,6 +114,20 @@ const reducer = (
         },
       };
     }
+    case "add-word":
+      return {
+        ...prevstate,
+        players: {
+          ...prevstate.players,
+          [actions.playerId]: {
+            ...prevstate.players[actions.playerId],
+            playerWordsFound: [
+              ...prevstate.players[actions.playerId].playerWordsFound,
+              actions.word,
+            ],
+          },
+        },
+      };
     case "start-game":
       return prevstate;
     case "end-game":
@@ -120,15 +140,32 @@ const reducer = (
 export const useGameContext = () => useContext(RawContext);
 
 export const useGameContextUtils = () => {
-  const { state } = useGameContext();
+  const { state, dispatch } = useGameContext();
 
-  const getPlayer = (playerId: string) =>
-    Object.values(state.players).find((player) => player.playerId === playerId);
+  const getActivePlayer = () =>
+    Object.values(state.players).find(
+      (player) => player.playerStatus === "active"
+    );
 
   const getPlayers = () => Object.values(state.players);
+
+  const addWordToPlayerInventory = (playerId: string, word: string) => {
+    if (word.length < 3) {
+      toast.warning("Word length should be minimum 3!");
+      return;
+    }
+
+    dispatch({
+      type: "add-word",
+      playerId: playerId,
+      word,
+    });
+  };
+
   return {
-    getPlayer,
     getPlayers,
+    getActivePlayer,
+    addWordToPlayerInventory,
   };
 };
 
