@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import BoogleGrid from "@/containers/boogle-grid.client";
 import Timer from "@/containers/timer/timer";
 import { useTimer } from "@/containers/timer/use-timer";
