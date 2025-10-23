@@ -13,7 +13,7 @@ const ScoreBoard = () => {
         <ScoreBoardPlayerCard
           key={`score-board.client.players.player${player.playerId}`}
           playerName={player.playerName}
-          playerScore={player.playerScore}
+          playerId={player.playerId}
           playerStatus={player.playerStatus}
         />
       ))}
