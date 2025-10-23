@@ -70,7 +70,7 @@ const getInitialGameState = () => {
       },
     },
     status: "idle",
-    time: 2,
+    time: 3,
   } satisfies GameControllerState;
 };
 const RawContext = createContext<GameControllerContextState>({
