@@ -1,9 +1,13 @@
 "use client";
 
-import { useBoogleGridContext } from "@/contexts/boogle-grid-context";
+import {
+  useBoogleGridContext,
+  useBoogleGridContextUtils,
+} from "@/contexts/boogle-grid-context";
 import { cn } from "@/lib/utils";
 import { TDice } from "@/types/core";
 import { MouseEventHandler } from "react";
+import { toast } from "sonner";
 
 type DiceProps = TDice;
 const Dice = ({
@@ -14,8 +18,19 @@ const Dice = ({
   diceStatus,
 }: DiceProps) => {
   const { state, dispatch } = useBoogleGridContext();
+  const { checkIsDiceAlreadyTraced } = useBoogleGridContextUtils();
   const handleOnMouseEnter: MouseEventHandler<HTMLDivElement> = () => {
     if (!state.isTracing) return;
+
+    const isTraced = checkIsDiceAlreadyTraced(diceId);
+
+    if (isTraced) {
+      toast.warning("Move not allowed!");
+      dispatch({
+        type: "end-tracing",
+      });
+      return;
+    }
 
     dispatch({
       type: "update-dice-status",

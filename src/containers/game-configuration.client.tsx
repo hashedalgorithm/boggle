@@ -46,6 +46,39 @@ const GameConfiguration = () => {
     });
   };
 
+  const handleOnClickIncreaseRowsInGrid: MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
+    if (state.gridSize.rows >= 12) return;
+    dispatch({
+      type: "increase-rows",
+    });
+  };
+  const handleOnClickDecreaseRowsInGrid: MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
+    if (state.gridSize.rows <= 4) return;
+    dispatch({
+      type: "decrease-rows",
+    });
+  };
+  const handleOnClickIncreaseColumnsInGrid: MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
+    if (state.gridSize.rows >= 12) return;
+    dispatch({
+      type: "increase-columns",
+    });
+  };
+  const handleOnClickDecreaseColumnsInGrid: MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
+    if (state.gridSize.rows <= 4) return;
+    dispatch({
+      type: "decrease-columns",
+    });
+  };
+
   return (
     <section className="flex justify-center items-center flex-col">
       <p className="muted mb-6">Choose your configuration and start playing!</p>
@@ -78,6 +111,50 @@ const GameConfiguration = () => {
               <Plus />
             </Button>
           </ButtonGroup>
+        </div>
+        <Separator />
+        <div className="flex w-full gap-8 items-center justify-between">
+          <p>Grid Size</p>
+          <div className="flex flex-col gap-2">
+            <ButtonGroup>
+              <Button
+                variant={"secondary"}
+                onClick={handleOnClickDecreaseRowsInGrid}
+                disabled={state.gridSize.rows <= 4}
+              >
+                <Minus />
+              </Button>
+              <Button variant={"secondary"}>
+                <p>{`${state.gridSize.rows}`}</p>
+              </Button>
+              <Button
+                onClick={handleOnClickIncreaseRowsInGrid}
+                variant={"secondary"}
+                disabled={state.gridSize.rows >= 12}
+              >
+                <Plus />
+              </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button
+                variant={"secondary"}
+                onClick={handleOnClickDecreaseColumnsInGrid}
+                disabled={state.gridSize.columns <= 4}
+              >
+                <Minus />
+              </Button>
+              <Button variant={"secondary"}>
+                <p>{`${state.gridSize.columns}`}</p>
+              </Button>
+              <Button
+                onClick={handleOnClickIncreaseColumnsInGrid}
+                variant={"secondary"}
+                disabled={state.gridSize.columns >= 12}
+              >
+                <Plus />
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
       </div>
 

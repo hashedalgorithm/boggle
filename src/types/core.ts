@@ -9,7 +9,11 @@ export type TPlayer = {
 export type TDiceStatus = "idle" | "active" | "not-available";
 export type TDice = {
   diceId: string;
-  dicePosition: number;
+  dicePosition: {
+    x: number;
+    y: number;
+    position: number;
+  };
   diceLabel: string;
   diceValue: string;
   diceStatus: TDiceStatus;

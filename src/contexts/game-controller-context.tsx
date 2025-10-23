@@ -41,6 +41,18 @@ type Actions =
       type: "decrease-time";
     }
   | {
+      type: "increase-rows";
+    }
+  | {
+      type: "decrease-rows";
+    }
+  | {
+      type: "increase-columns";
+    }
+  | {
+      type: "decrease-columns";
+    }
+  | {
       type: "end-game";
     }
   | {
@@ -53,6 +65,10 @@ type GameControllerState = {
   status: "active" | "idle";
   players: Record<string, TPlayer>;
   time: number;
+  gridSize: {
+    rows: number;
+    columns: number;
+  };
 };
 
 type GameControllerContextState = {
@@ -74,6 +90,10 @@ const getInitialGameState = () => {
     },
     status: "idle",
     time: 3,
+    gridSize: {
+      rows: 4,
+      columns: 4,
+    },
   } satisfies GameControllerState;
 };
 const RawContext = createContext<GameControllerContextState>({
@@ -168,6 +188,39 @@ const reducer = (
           },
           {} as Record<string, TPlayer>
         ),
+      };
+
+    case "increase-rows":
+      return {
+        ...prevstate,
+        gridSize: {
+          ...prevstate.gridSize,
+          rows: prevstate.gridSize.rows + 1,
+        },
+      };
+    case "decrease-rows":
+      return {
+        ...prevstate,
+        gridSize: {
+          ...prevstate.gridSize,
+          rows: prevstate.gridSize.rows - 1,
+        },
+      };
+    case "increase-columns":
+      return {
+        ...prevstate,
+        gridSize: {
+          ...prevstate.gridSize,
+          columns: prevstate.gridSize.columns + 1,
+        },
+      };
+    case "decrease-columns":
+      return {
+        ...prevstate,
+        gridSize: {
+          ...prevstate.gridSize,
+          columns: prevstate.gridSize.columns - 1,
+        },
       };
     default:
       return prevstate;

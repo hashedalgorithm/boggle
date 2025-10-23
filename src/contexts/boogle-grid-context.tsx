@@ -68,42 +68,9 @@ export const useBoogleGridContext = () => useContext(RawContext);
 export const useBoogleGridContextUtils = () => {
   const { state } = useBoogleGridContext();
 
-  const checkIsDiceTraceable = (position: number) => {
-    for (const dice of Object.values(state.dices)) {
-      if (dice.dicePosition === 0)
-        return position === 2 || position === 5 || position === 6;
-      // TODO
-      if (dice.dicePosition === 1)
-        return position === 3 || position === 6 || position === 6;
-      if (dice.dicePosition === 2)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 3)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 4)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 5)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 6)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 7)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 8)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 9)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 10)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 11)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 12)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 13)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 14)
-        return position === 2 || position === 5 || position === 6;
-      if (dice.dicePosition === 15)
-        return position === 2 || position === 5 || position === 6;
-    }
+
+  const checkIsDiceAlreadyTraced = (diceId: string) => {
+    return state.path.includes(diceId);
   };
 
   const getWordWithPath = (): string => {
@@ -118,6 +85,7 @@ export const useBoogleGridContextUtils = () => {
 
   return {
     checkIsDiceTraceable,
+    checkIsDiceAlreadyTraced,
     getWordWithPath,
   };
 };
@@ -180,7 +148,11 @@ const reducer = (
 };
 
 const BoogleGridProvider = ({ children }: BoogleGridProviderProps) => {
-  const [state, dispatch] = useReducer(reducer, getInitialValue());
+  const { state: gameConfig } = useGameContext();
+  const [state, dispatch] = useReducer(
+    reducer,
+    getInitialValue(gameConfig.gridSize.rows, gameConfig.gridSize.columns)
+  );
   return (
     <RawContext.Provider value={{ state, dispatch }}>
       {children}
