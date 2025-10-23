@@ -3,9 +3,10 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Separator } from "@/components/ui/separator";
 import GameConfigurationPlayer from "@/containers/game-configuration-player.client";
 import { useGameContext } from "@/contexts/game-controller-context";
-import { PlayCircle, Plus } from "lucide-react";
+import { Minus, PlayCircle, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MouseEventHandler } from "react";
+import { toast } from "sonner";
 
 const GameConfiguration = () => {
   const { state, dispatch } = useGameContext();
@@ -25,19 +26,59 @@ const GameConfiguration = () => {
     push("/play");
   };
 
+  const handleOnClickIncreaseTime: MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
+    dispatch({
+      type: "increase-time",
+    });
+  };
+  const handleOnClickDecreaseTime: MouseEventHandler<
+    HTMLButtonElement
+  > = () => {
+    if (state.time < 1) {
+      toast.warning("Minimum is time period is 1 minute!");
+      return;
+    }
+
+    dispatch({
+      type: "decrease-time",
+    });
+  };
+
   return (
     <section className="flex justify-center items-center flex-col">
       <p className="muted mb-6">Choose your configuration and start playing!</p>
-      <div className="flex w-full gap-8 items-center justify-between">
-        <p>Number of players</p>
-        <ButtonGroup>
-          <Button variant={"secondary"}>
-            <p>{Object.keys(state.players).length}</p>
-          </Button>
-          <Button onClick={handleOnAddPlayer} variant={"secondary"}>
-            <Plus />
-          </Button>
-        </ButtonGroup>
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex w-full gap-8 items-center justify-between">
+          <p>Number of players</p>
+          <ButtonGroup>
+            <Button variant={"secondary"}>
+              <p>{Object.keys(state.players).length}</p>
+            </Button>
+            <Button onClick={handleOnAddPlayer} variant={"secondary"}>
+              <Plus />
+            </Button>
+          </ButtonGroup>
+        </div>
+        <div className="flex w-full gap-8 items-center justify-between">
+          <p>Time per round</p>
+          <ButtonGroup>
+            <Button
+              variant={"secondary"}
+              onClick={handleOnClickDecreaseTime}
+              disabled={state.time <= 1}
+            >
+              <Minus />
+            </Button>
+            <Button variant={"secondary"}>
+              <p>{`${state.time} min`}</p>
+            </Button>
+            <Button onClick={handleOnClickIncreaseTime} variant={"secondary"}>
+              <Plus />
+            </Button>
+          </ButtonGroup>
+        </div>
       </div>
 
       <Separator className="my-6" />

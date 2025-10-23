@@ -3,7 +3,7 @@
 import { uuid } from "@/lib/utils";
 import { TPlayer } from "@/types/core";
 
-import React, {
+import {
   createContext,
   Dispatch,
   PropsWithChildren,
@@ -35,6 +35,12 @@ type Actions =
       type: "start-game";
     }
   | {
+      type: "increase-time";
+    }
+  | {
+      type: "decrease-time";
+    }
+  | {
       type: "end-game";
     };
 
@@ -43,6 +49,7 @@ type GameControllerProviderProps = PropsWithChildren;
 type GameControllerState = {
   status: "active" | "idle";
   players: Record<string, TPlayer>;
+  time: number;
 };
 
 type GameControllerContextState = {
@@ -63,6 +70,7 @@ const getInitialGameState = () => {
       },
     },
     status: "idle",
+    time: 2,
   } satisfies GameControllerState;
 };
 const RawContext = createContext<GameControllerContextState>({
@@ -127,6 +135,16 @@ const reducer = (
             ],
           },
         },
+      };
+    case "increase-time":
+      return {
+        ...prevstate,
+        time: prevstate.time + 1,
+      };
+    case "decrease-time":
+      return {
+        ...prevstate,
+        time: prevstate.time - 1 > 1 ? prevstate.time - 1 : 1,
       };
     case "start-game":
       return prevstate;
