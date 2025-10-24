@@ -88,7 +88,8 @@ boggle-main
    - Configurations are managed by the `GameConfiguration` component.
    - Players can add or remove participants and adjust the timer and grid settings.
 
-   ![Configuration Screen](./screenshots/configuration_screen.png)
+   <img width="1706" height="942" alt="Screenshot 2025-10-24 at 07 50 49" src="https://github.com/user-attachments/assets/16403961-8bf5-48a8-b528-2eec27ae94bc" />
+
 
 2. **Play Screen (PlayScreen)**
 
@@ -96,14 +97,15 @@ boggle-main
    - Players trace letters to form words.
    - Uses `BoogleGrid` and `Timer` components for gameplay mechanics.
 
-   ![Play Screen](./screenshots/play_screen.png)
+    <img width="1710" height="1026" alt="Screenshot 2025-10-24 at 07 51 00" src="https://github.com/user-attachments/assets/93f93fbd-6253-4704-b854-a6d1c0a4604c" />
 
 3. **Results Screen (ResultsScreen)**
 
    - Summarizes players' scores and words formed.
    - Players can restart the game using the "Play Again" button.
 
-   ![Results Screen](./screenshots/results_screen.png)
+    <img width="1709" height="1025" alt="Screenshot 2025-10-24 at 07 51 10" src="https://github.com/user-attachments/assets/da44869f-dbf1-4c25-a1ff-abbb02dd796a" />
+
 
 ## Contexts and State Management
 
