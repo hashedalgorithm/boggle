@@ -1,15 +1,14 @@
 "use client";
 
 import ScoreBoardPlayerCard from "@/containers/score-board-player-card.client";
-import { useGameContextUtils } from "@/contexts/game-controller-context";
+import { useGameContext } from "@/contexts/game-controller-context";
 
 const ScoreBoard = () => {
-  const { getPlayers } = useGameContextUtils();
+  const { state } = useGameContext();
 
-  const players = getPlayers();
   return (
     <section className="fixed bottom-0 right-8">
-      {players.map((player) => (
+      {Object.values(state.players).map((player) => (
         <ScoreBoardPlayerCard
           key={`score-board.client.players.player${player.playerId}`}
           playerName={player.playerName}

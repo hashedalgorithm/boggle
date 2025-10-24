@@ -28,6 +28,15 @@ type Actions =
       playerName: string;
     }
   | {
+      type: "set-active-player";
+      playerId: string;
+    }
+  | {
+      type: "update-player-status";
+      playerId: string;
+      status: TPlayer["playerStatus"];
+    }
+  | {
       type: "add-word";
       word: string;
       playerId: string;
@@ -51,10 +60,6 @@ type Actions =
       type: "decrease-columns";
     }
   | {
-      type: "set-active-player";
-      playerId: string;
-    }
-  | {
       type: "change-language";
       language: GameControllerState["language"];
     }
@@ -66,11 +71,6 @@ type Actions =
     }
   | {
       type: "reset-game";
-    }
-  | {
-      type: "update-player-status";
-      playerId: string;
-      status: TPlayer["playerStatus"];
     };
 
 type GameControllerProviderProps = PropsWithChildren;
@@ -298,11 +298,6 @@ export const useGameContextUtils = () => {
   const getActivePlayer = (playerId: string) =>
     Object.values(state.players).find((player) => player.playerId === playerId);
 
-  const getPlayer = (playerId: string) =>
-    Object.values(state.players).find((player) => player.playerId === playerId);
-
-  const getPlayers = () => Object.values(state.players);
-
   const addWordToPlayerInventory = async (playerId: string, word: string) => {
     if (word.length < 3) {
       toast.warning("Word length should be minimum 3!");
@@ -345,11 +340,9 @@ export const useGameContextUtils = () => {
   };
 
   return {
-    getPlayers,
     getActivePlayer,
     addWordToPlayerInventory,
     getPlayerScore,
-    getPlayer,
     pickNextPlayer,
   };
 };
