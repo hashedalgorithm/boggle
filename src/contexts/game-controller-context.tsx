@@ -65,7 +65,9 @@ type Actions =
       type: "end-game";
     }
   | {
-      type: "play-again";
+      type: "update-player-status";
+      playerId: string;
+      status: TPlayer["playerStatus"];
     };
 
 type GameControllerProviderProps = PropsWithChildren;
@@ -185,8 +187,6 @@ const reducer = (
     case "start-game":
       return { ...prevstate, status: "active" };
     case "end-game":
-      return { ...prevstate, status: "idle" };
-    case "play-again":
       return {
         ...prevstate,
         status: "idle",
