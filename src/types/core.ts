@@ -2,7 +2,7 @@ export type TPlayer = {
   playerId: string;
   playerName: string;
   playerScore: number;
-  playerStatus: "active" | "idle";
+  playerStatus: "playing" | "waiting" | "completed";
   playerWordsFound: string[];
 };
 

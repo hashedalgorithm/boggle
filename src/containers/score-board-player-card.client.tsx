@@ -28,7 +28,7 @@ const ScoreBoardPlayerCard = ({
         <div className="flex flex-col gap-0">
           <p>{playerName}</p>
           <p className="muted">
-            {playerStatus === "active" ? "Playing..." : "Idle"}
+            {playerStatus === "playing" ? "Playing..." : "Idle"}
           </p>
         </div>
       </div>

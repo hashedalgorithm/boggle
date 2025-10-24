@@ -97,7 +97,7 @@ const getInitialGameState = () => {
         playerId: uid,
         playerName: "Player 1",
         playerScore: 0,
-        playerStatus: "active",
+        playerStatus: "playing",
         playerWordsFound: [],
       },
     },
@@ -131,7 +131,7 @@ const reducer = (
             playerId,
             playerName: actions.playerName,
             playerScore: 0,
-            playerStatus: "idle",
+            playerStatus: "waiting",
             playerWordsFound: [],
           },
         },
@@ -186,7 +186,10 @@ const reducer = (
       };
     case "start-game":
       return { ...prevstate, status: "active" };
-    case "end-game":
+    case "end-game": {
+      const firstPlayer = Object.values(prevstate.players).at(0);
+      if (!firstPlayer) return prevstate;
+
       return {
         ...prevstate,
         status: "idle",
@@ -194,14 +197,19 @@ const reducer = (
           (accumulator, currentValue) => {
             accumulator[currentValue.playerId] = {
               ...currentValue,
-              playerStatus: "active",
+              playerStatus:
+                firstPlayer.playerId === currentValue.playerId
+                  ? "playing"
+                  : "waiting",
               playerWordsFound: [],
             };
             return accumulator;
           },
           {} as Record<string, TPlayer>
         ),
+        currentPlayerId: firstPlayer.playerId,
       };
+    }
 
     case "increase-rows":
       return {
@@ -238,6 +246,13 @@ const reducer = (
     case "set-active-player":
       return {
         ...prevstate,
+        players: {
+          ...prevstate.players,
+          [actions.playerId]: {
+            ...prevstate.players[actions.playerId],
+            playerStatus: "playing",
+          },
+        },
         currentPlayerId: actions.playerId,
       };
 
@@ -245,6 +260,17 @@ const reducer = (
       return {
         ...prevstate,
         language: actions.language,
+      };
+    case "update-player-status":
+      return {
+        ...prevstate,
+        players: {
+          ...prevstate.players,
+          [actions.playerId]: {
+            ...prevstate.players[actions.playerId],
+            playerStatus: actions.status,
+          },
+        },
       };
     default:
       return prevstate;
@@ -299,12 +325,19 @@ export const useGameContextUtils = () => {
     }, player.playerScore);
   };
 
+  const pickNextPlayer = () => {
+    return Object.values(state.players).find(
+      (player) => player.playerStatus === "waiting"
+    );
+  };
+
   return {
     getPlayers,
     getActivePlayer,
     addWordToPlayerInventory,
     getPlayerScore,
     getPlayer,
+    pickNextPlayer,
   };
 };
 

@@ -3,8 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import BoogleGrid from "@/containers/boogle-grid.client";
-import Timer from "@/containers/timer/timer";
-import { useTimer } from "@/containers/timer/use-timer";
+import Timer from "@/containers/timer";
 import {
   useGameContext,
   useGameContextUtils,
@@ -18,10 +17,6 @@ const PlayScreen = () => {
   const { replace } = useRouter();
   const { state, dispatch } = useGameContext();
   const { getActivePlayer } = useGameContextUtils();
-
-  const timerProps = useTimer({
-    minutes: state.time,
-  });
 
   const currentPlayer = useMemo(() => {
     if (!state.currentPlayerId) return;
@@ -52,7 +47,7 @@ const PlayScreen = () => {
 
   return (
     <section>
-      <Timer className="mb-20" {...timerProps} />
+      <Timer className="mb-20" />
       <BoogleGrid />
 
       {currentPlayer && (
