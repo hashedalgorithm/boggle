@@ -19,7 +19,7 @@ const ResultsScreen = () => {
 
   const handleOnClickPlayAgain: MouseEventHandler<HTMLButtonElement> = () => {
     dispatch({
-      type: "end-game",
+      type: "reset-game",
     });
     push("/");
   };

@@ -33,9 +33,6 @@ type Actions =
       playerId: string;
     }
   | {
-      type: "start-game";
-    }
-  | {
       type: "increase-time";
     }
   | {
@@ -62,7 +59,13 @@ type Actions =
       language: GameControllerState["language"];
     }
   | {
+      type: "start-game";
+    }
+  | {
       type: "end-game";
+    }
+  | {
+      type: "reset-game";
     }
   | {
       type: "update-player-status";
@@ -187,6 +190,16 @@ const reducer = (
     case "start-game":
       return { ...prevstate, status: "active" };
     case "end-game": {
+      const firstPlayer = Object.values(prevstate.players).at(0);
+      if (!firstPlayer) return prevstate;
+
+      return {
+        ...prevstate,
+        status: "idle",
+        currentPlayerId: null,
+      };
+    }
+    case "reset-game": {
       const firstPlayer = Object.values(prevstate.players).at(0);
       if (!firstPlayer) return prevstate;
 
