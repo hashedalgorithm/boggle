@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGameContextUtils } from "@/contexts/game-controller-context";
+import { cn } from "@/lib/utils";
 import { TPlayer } from "@/types/core";
 
 type ScoreBoardPlayerCardProps = Pick<
@@ -27,8 +28,17 @@ const ScoreBoardPlayerCard = ({
 
         <div className="flex flex-col gap-0">
           <p>{playerName}</p>
-          <p className="muted">
-            {playerStatus === "playing" ? "Playing..." : "Idle"}
+          <p
+            className={cn({
+              "text-emerald-500": playerStatus === "playing",
+              muted: playerStatus !== "playing",
+            })}
+          >
+            {playerStatus === "playing"
+              ? "Playing..."
+              : playerStatus === "waiting"
+              ? "Idle"
+              : "Completed"}
           </p>
         </div>
       </div>
