@@ -42,7 +42,7 @@ const addWordToPlayerInventory = async (playerId: string, word: string) => {
   };
 ```
 
-There is edge case where on deciding to whom the score should be rewarded in case of multiple occurrences. For eg. Player 1, 2 and 3 traces same word, then the score should be given to the player who found it first. So I made a logic where whenever a word is traced (in multiple player setup), the word will be cross checked with the words that are found so far by other players.
+There is this edge case on deciding to whom the score should be rewarded in case of multiple occurrences. For eg. Player 1, 2 and 3 traces same word, then the score should be given to the player who found it first. So I made a logic where whenever a word is traced (in multiple player setup), the word will be cross checked with the words that are found so far by other players. 
 
 ## Second Part
 
