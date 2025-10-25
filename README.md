@@ -90,7 +90,6 @@ boggle-main
 
    <img width="1706" height="942" alt="Screenshot 2025-10-24 at 07 50 49" src="https://github.com/user-attachments/assets/16403961-8bf5-48a8-b528-2eec27ae94bc" />
 
-
 2. **Play Screen (PlayScreen)**
 
    - Displays the Boggle grid and a timer.
@@ -105,7 +104,6 @@ boggle-main
    - Players can restart the game using the "Play Again" button.
 
     <img width="1709" height="1025" alt="Screenshot 2025-10-24 at 07 51 10" src="https://github.com/user-attachments/assets/da44869f-dbf1-4c25-a1ff-abbb02dd796a" />
-
 
 ## Contexts and State Management
 
@@ -135,9 +133,8 @@ This documentation provides an overview of the Boggle game app. For further deta
 
 1. Boggle - https://en.wikipedia.org/wiki/Boggle#Rules
 2. Mouse Events - https://www.w3schools.com/jsref/obj_mouseevent.asp
-3. Array Generation - https://stackoverflow.com/questions/39924644/es6-generate-an-array-of-numbers
-4. Design System - https://ui.shadcn.com/
-5. Lucide Icons - https://lucide.dev/icons/
-6. ChatGPT - Contents of this Readme are written using AI. Only the contents of the readme, i am not vibe coder duh.
+3. Design System - https://ui.shadcn.com/
+4. Lucide Icons - https://lucide.dev/icons/
+5. ChatGPT - Contents of this Readme are written using AI.
 
 Happy coding!
