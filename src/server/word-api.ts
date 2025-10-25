@@ -4,6 +4,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 export const getWordList = async (language: string) => {
+  // https://www.w3schools.com/nodejs/nodejs_filesystem.asp
+
   const filePath = path.join(process.cwd(), "src", "assets", `${language}.txt`);
   if (!fs.existsSync(filePath)) {
     throw new Error(`Word list not found: ${filePath}`);

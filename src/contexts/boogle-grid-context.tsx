@@ -58,6 +58,7 @@ const getInitialValue = (
   cols: number
 ) =>
   ({
+    // https://stackoverflow.com/questions/39924644/es6-generate-an-array-of-numbers
     dices: Array.from(Array(rows * cols).keys()).reduce(
       (accumulator, value) => {
         const randomIndex = Math.floor(
@@ -68,6 +69,8 @@ const getInitialValue = (
           diceId: uid,
           diceLabel: alphabets[language][randomIndex],
           dicePosition: {
+            // https://stackoverflow.com/questions/29858454/using-an-index-to-find-a-position-in-a-matrix
+            // Using the index(value) to calculate to Matrix Position C(x,y)
             x: Math.floor(value / rows),
             y: value % cols,
             position: value,
@@ -102,6 +105,16 @@ export const useBoogleGridContextUtils = () => {
 
   const getAllowedPositions = useCallback((position: TDice["dicePosition"]) => {
     const allowedTraceableAdajacentPositions: Array<TCoordinates> = [];
+
+    // Allowed Sequentially Adjacent Dice Positions
+    // Lets take any dice from the Grid, D(x,y)
+    /*
+      (x-1)(y-1) | (x-1)(y) | (x-1)(y+1)
+      (x)(y-1)   | (x)(y)   | (x)(y+1)
+      (x+1)(y-1) | (x+1)(y) | (x+1)(y+1)
+
+      For D(x)(y) all other adjacent dices are allowed positions.
+    */
 
     // (x-1)(y-1)
     const topLeft = {
@@ -145,6 +158,8 @@ export const useBoogleGridContextUtils = () => {
       y: position.y + 1,
     } satisfies TCoordinates;
 
+    // In case of dices in border, x and y value would go < 0. We are ignoring those positions.
+    // For eg. D(0,0) => topLeft position would be = (-1)(-1), hence we ignore this value.
     if (topLeft.x >= 0 && topLeft.y >= 0)
       allowedTraceableAdajacentPositions.push(topLeft);
     if (topCenter.x >= 0 && topCenter.y >= 0)

@@ -292,6 +292,16 @@ const reducer = (
 
 export const useGameContext = () => useContext(RawContext);
 
+const calculateScore = (words: string[]) =>
+  words.reduce((total, currentValue) => {
+    if (currentValue.length <= 4 && currentValue.length >= 3) return total + 1;
+    if (currentValue.length <= 5) return total + 2;
+    if (currentValue.length <= 6) return total + 3;
+    if (currentValue.length <= 7) return total + 5;
+    if (currentValue.length >= 8) return total + 11;
+    else return total;
+  }, 0);
+
 export const useGameContextUtils = () => {
   const { state, dispatch } = useGameContext();
 
@@ -307,13 +317,16 @@ export const useGameContextUtils = () => {
       return;
     }
 
-    const wordsFoundSoFar = getAllWordsFoundedSoFar();
+    if (Object.keys(state.players).length > 1) {
+      const wordsFoundSoFar = getAllWordsFoundedSoFar();
 
-    if (wordsFoundSoFar.includes(word)) {
-      toast.warning("Found already! Try again!");
-      return;
+      if (wordsFoundSoFar.includes(word)) {
+        toast.warning("Found already! Try again!");
+        return;
+      }
     }
 
+    // The traced word will be sent to the server and checked against the given word list.
     const resp = await validateWord(state.language, word);
     if (!resp.status) {
       toast.warning("Not a valid word! Try again!");
@@ -332,15 +345,7 @@ export const useGameContextUtils = () => {
 
     if (!player) return 0;
 
-    return player.playerWordsFound.reduce((total, currentValue) => {
-      if (currentValue.length <= 4 && currentValue.length >= 3)
-        return total + 1;
-      if (currentValue.length <= 5) return total + 2;
-      if (currentValue.length <= 6) return total + 3;
-      if (currentValue.length <= 7) return total + 5;
-      if (currentValue.length >= 8) return total + 11;
-      else return total;
-    }, player.playerScore);
+    return calculateScore(player.playerWordsFound);
   };
 
   const pickNextPlayer = () => {
