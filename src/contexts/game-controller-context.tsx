@@ -298,9 +298,19 @@ export const useGameContextUtils = () => {
   const getActivePlayer = (playerId: string) =>
     Object.values(state.players).find((player) => player.playerId === playerId);
 
+  const getAllWordsFoundedSoFar = () =>
+    Object.values(state.players).flatMap((player) => player.playerWordsFound);
+
   const addWordToPlayerInventory = async (playerId: string, word: string) => {
     if (word.length < 3) {
       toast.warning("Word length should be minimum 3!");
+      return;
+    }
+
+    const wordsFoundSoFar = getAllWordsFoundedSoFar();
+
+    if (wordsFoundSoFar.includes(word)) {
+      toast.warning("Found already! Try again!");
       return;
     }
 
