@@ -137,4 +137,3 @@ This documentation provides an overview of the Boggle game app. For further deta
 4. Lucide Icons - https://lucide.dev/icons/
 5. ChatGPT - Contents of this Readme are written using AI.
 
-Happy coding!
