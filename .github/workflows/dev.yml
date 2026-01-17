@@ -17,10 +17,10 @@ jobs:
       - name: pull Vercel environment information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: build project artifacts
-        run: 
+        run: |
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: deploy project artifacts to Vercel
-        run:
+        run: |
           OUTPUT=$(du --inodes -d 5 .vercel/output)
           echo "$OUTPUT"
           LAST=$(echo "$OUTPUT" | tail -n 1)
