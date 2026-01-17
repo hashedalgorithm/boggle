@@ -12,6 +12,8 @@ jobs:
     if: github.repository == 'hashedalgorithm/boggle'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: install Vercel CLI
         run: npm install --global vercel@latest next@latest
       - name: pull Vercel environment information
