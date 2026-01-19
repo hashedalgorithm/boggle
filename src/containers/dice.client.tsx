@@ -6,7 +6,7 @@ import {
 } from "@/contexts/boogle-grid-context";
 import { cn } from "@/lib/utils";
 import { TDice } from "@/types/core";
-import { MouseEventHandler, useMemo } from "react";
+import { PointerEventHandler, useMemo } from "react";
 import { toast } from "sonner";
 
 type DiceProps = TDice;
@@ -39,7 +39,7 @@ const Dice = ({
 
     return !!possibleNextMoves.find(
       (possibleMove) =>
-        possibleMove.x === dicePosition.x && possibleMove.y === dicePosition.y
+        possibleMove.x === dicePosition.x && possibleMove.y === dicePosition.y,
     );
   }, [
     diceId,
@@ -50,7 +50,7 @@ const Dice = ({
     state.currentDiceId,
   ]);
 
-  const handleOnMouseEnter: MouseEventHandler<HTMLDivElement> = () => {
+  const handleOnPointerEnter: PointerEventHandler<HTMLDivElement> = () => {
     if (!state.isTracing) return;
 
     if (isDiceAlreadyTraced) {
@@ -76,12 +76,12 @@ const Dice = ({
           "border-amber-400": diceStatus === "active",
           "border-destructive": diceStatus === "not-available",
           "border-emerald-500/50": isPossibleMoveFromCurrentDice,
-        }
+        },
       )}
       data-diceid={diceId}
       data-value={diceValue}
       data-position={dicePosition}
-      onMouseEnter={handleOnMouseEnter}
+      onPointerEnter={handleOnPointerEnter}
     >
       {diceLabel}
     </div>

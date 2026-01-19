@@ -10,19 +10,20 @@ import {
   useGameContextUtils,
 } from "@/contexts/game-controller-context";
 import { cn, getAttribute } from "@/lib/utils";
-import { MouseEventHandler } from "react";
+import { PointerEventHandler, SyntheticEvent, TouchEventHandler } from "react";
 import { toast } from "sonner";
 
 const BoogleGrid = () => {
   const { state: gameConfig } = useGameContext();
   const { state, dispatch } = useBoogleGridContext();
   const { getActivePlayer, addWordToPlayerInventory } = useGameContextUtils();
-  const { getWordWithPath } = useBoogleGridContextUtils();
+  const { getWordWithPath, checkIsDiceAlreadyTraced } =
+    useBoogleGridContextUtils();
 
-  const handleOnMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleOnStartTrace = (e: SyntheticEvent) => {
     if (state.isTracing) return;
 
-    const diceId = getAttribute<HTMLDivElement, MouseEvent>(e, "data-diceid");
+    const diceId = getAttribute(e, "data-diceid");
     if (!diceId) return;
 
     dispatch({
@@ -30,7 +31,8 @@ const BoogleGrid = () => {
       diceId,
     });
   };
-  const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = async () => {
+
+  const handleOnEndTrace = async () => {
     if (!state.isTracing) return;
 
     if (!gameConfig.currentPlayerId) {
@@ -49,6 +51,58 @@ const BoogleGrid = () => {
     dispatch({
       type: "end-tracing",
     });
+  };
+
+  const handleOnPointerDown: PointerEventHandler<HTMLDivElement> = (e) => {
+    handleOnStartTrace(e);
+  };
+
+  const handleOnPointerUp: PointerEventHandler<HTMLDivElement> = async () => {
+    await handleOnEndTrace();
+  };
+
+  const handleOnTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
+    if (!state.isTracing) return;
+
+    const touch = e.touches?.[0];
+
+    if (!touch) {
+      toast.error("Cant find the interaction!");
+      return;
+    }
+
+    const diceId = document
+      .elementFromPoint(touch.clientX, touch.clientY)
+      ?.getAttribute("data-diceid");
+
+    if (!diceId) return;
+
+    const isDiceAlreadyTraced = checkIsDiceAlreadyTraced(diceId);
+
+    if (isDiceAlreadyTraced) {
+      return;
+    }
+
+    dispatch({
+      type: "update-dice-status",
+      diceId,
+      status: "active",
+    });
+  };
+
+  const handleOnTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
+    const touch = e.changedTouches?.[0];
+
+    if (!touch) {
+      toast.error("Cant trace the interaction!");
+      return;
+    }
+
+    handleOnStartTrace(e);
+  };
+
+  const handleOnTouchEnd: TouchEventHandler<HTMLDivElement> = async () => {
+    await handleOnEndTrace();
   };
 
   return (
@@ -76,8 +130,11 @@ const BoogleGrid = () => {
       style={{
         userSelect: "none",
       }}
-      onMouseDown={handleOnMouseDown}
-      onMouseUp={handleOnMouseUp}
+      onTouchStart={handleOnTouchStart}
+      onTouchEnd={handleOnTouchEnd}
+      onPointerDown={handleOnPointerDown}
+      onPointerUp={handleOnPointerUp}
+      onTouchMove={handleOnTouchMove}
     >
       {Object.values(state.dices)
         .sort((a, b) => {
