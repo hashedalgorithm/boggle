@@ -62,6 +62,7 @@ const BoogleGrid = () => {
   };
 
   const handleOnTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
     if (!state.isTracing) return;
 
     const touch = e.touches?.[0];
@@ -79,9 +80,7 @@ const BoogleGrid = () => {
 
     const isDiceAlreadyTraced = checkIsDiceAlreadyTraced(diceId);
 
-    if (isDiceAlreadyTraced) {
-      return;
-    }
+    if (isDiceAlreadyTraced) return;
 
     dispatch({
       type: "update-dice-status",
@@ -91,6 +90,7 @@ const BoogleGrid = () => {
   };
 
   const handleOnTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
     const touch = e.changedTouches?.[0];
 
     if (!touch) {
@@ -101,7 +101,8 @@ const BoogleGrid = () => {
     handleOnStartTrace(e);
   };
 
-  const handleOnTouchEnd: TouchEventHandler<HTMLDivElement> = async () => {
+  const handleOnTouchEnd: TouchEventHandler<HTMLDivElement> = async (e) => {
+    e.preventDefault();
     await handleOnEndTrace();
   };
 
@@ -129,6 +130,7 @@ const BoogleGrid = () => {
       })}
       style={{
         userSelect: "none",
+        touchAction: "none",
       }}
       onTouchStart={handleOnTouchStart}
       onTouchEnd={handleOnTouchEnd}
