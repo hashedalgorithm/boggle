@@ -63,11 +63,13 @@ const BoogleGrid = () => {
       return;
     }
 
-    await addWordToPlayerInventory(activePlayer.playerId, getWordWithPath());
+    const tracedWord = getWordWithPath();
 
     dispatch({
       type: "end-tracing",
     });
+
+    addWordToPlayerInventory(activePlayer.playerId, tracedWord);
   }, [
     addWordToPlayerInventory,
     dispatch,
