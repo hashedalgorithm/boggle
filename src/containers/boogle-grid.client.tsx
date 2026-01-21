@@ -10,7 +10,7 @@ import {
   useGameContextUtils,
 } from "@/contexts/game-controller-context";
 import { cn, getAttribute } from "@/lib/utils";
-import { PointerEventHandler, SyntheticEvent, TouchEventHandler } from "react";
+import { MouseEventHandler, SyntheticEvent, TouchEventHandler } from "react";
 import { toast } from "sonner";
 
 const BoogleGrid = () => {
@@ -53,11 +53,11 @@ const BoogleGrid = () => {
     });
   };
 
-  const handleOnPointerDown: PointerEventHandler<HTMLDivElement> = (e) => {
+  const handleOnMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
     handleOnStartTrace(e);
   };
 
-  const handleOnPointerUp: PointerEventHandler<HTMLDivElement> = async () => {
+  const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = async () => {
     await handleOnEndTrace();
   };
 
@@ -132,8 +132,8 @@ const BoogleGrid = () => {
       }}
       onTouchStart={handleOnTouchStart}
       onTouchEnd={handleOnTouchEnd}
-      onPointerDown={handleOnPointerDown}
-      onPointerUp={handleOnPointerUp}
+      onMouseDown={handleOnMouseDown}
+      onMouseUp={handleOnMouseUp}
       onTouchMove={handleOnTouchMove}
     >
       {Object.values(state.dices)
