@@ -6,7 +6,7 @@ import {
 } from "@/contexts/boogle-grid-context";
 import { cn } from "@/lib/utils";
 import { TDice } from "@/types/core";
-import { MouseEventHandler, useMemo } from "react";
+import { memo, MouseEventHandler, useMemo } from "react";
 import { toast } from "sonner";
 
 type DiceProps = TDice;
@@ -88,4 +88,4 @@ const Dice = ({
   );
 };
 
-export default Dice;
+export default memo(Dice);

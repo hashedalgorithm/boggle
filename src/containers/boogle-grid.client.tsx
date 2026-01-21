@@ -14,6 +14,7 @@ import {
   MouseEventHandler,
   SyntheticEvent,
   TouchEventHandler,
+  useCallback,
   useMemo,
 } from "react";
 import { toast } from "sonner";
@@ -33,19 +34,22 @@ const BoogleGrid = () => {
     [state.dices],
   );
 
-  const handleOnStartTrace = (e: SyntheticEvent) => {
-    if (state.isTracing) return;
+  const handleOnStartTrace = useCallback(
+    (e: SyntheticEvent) => {
+      if (state.isTracing) return;
 
-    const diceId = getAttribute(e, "data-diceid");
-    if (!diceId) return;
+      const diceId = getAttribute(e, "data-diceid");
+      if (!diceId) return;
 
-    dispatch({
-      type: "start-tracing",
-      diceId,
-    });
-  };
+      dispatch({
+        type: "start-tracing",
+        diceId,
+      });
+    },
+    [dispatch, state.isTracing],
+  );
 
-  const handleOnEndTrace = async () => {
+  const handleOnEndTrace = useCallback(async () => {
     if (!state.isTracing) return;
 
     if (!gameConfig.currentPlayerId) {
@@ -64,61 +68,74 @@ const BoogleGrid = () => {
     dispatch({
       type: "end-tracing",
     });
-  };
+  }, [
+    addWordToPlayerInventory,
+    dispatch,
+    gameConfig.currentPlayerId,
+    getActivePlayer,
+    getWordWithPath,
+    state.isTracing,
+  ]);
 
-  const handleOnMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
-    handleOnStartTrace(e);
-  };
+  const handleOnMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      handleOnStartTrace(e);
+    },
+    [handleOnStartTrace],
+  );
 
-  const handleOnMouseUp: MouseEventHandler<HTMLDivElement> = async () => {
-    await handleOnEndTrace();
-  };
+  const handleOnMouseUp: MouseEventHandler<HTMLDivElement> =
+    useCallback(async () => {
+      await handleOnEndTrace();
+    }, [handleOnEndTrace]);
 
-  const handleOnTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
-    console.log("hello");
-    e.preventDefault();
-    if (!state.isTracing) return;
+  const handleOnTouchMove: TouchEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!state.isTracing) return;
 
-    const touch = e.touches?.[0];
+      const touch = e.touches?.[0];
 
-    if (!touch) {
-      toast.error("Cant find the interaction!");
-      return;
-    }
+      if (!touch) return;
 
-    const diceId = document
-      .elementFromPoint(touch.clientX, touch.clientY)
-      ?.getAttribute("data-diceid");
+      const diceId = document
+        .elementFromPoint(touch.clientX, touch.clientY)
+        ?.getAttribute("data-diceid");
 
-    if (!diceId) return;
+      if (!diceId) return;
 
-    const isDiceAlreadyTraced = checkIsDiceAlreadyTraced(diceId);
+      const isDiceAlreadyTraced = checkIsDiceAlreadyTraced(diceId);
 
-    if (isDiceAlreadyTraced) return;
+      if (isDiceAlreadyTraced) return;
 
-    dispatch({
-      type: "update-dice-status",
-      diceId,
-      status: "active",
-    });
-  };
+      dispatch({
+        type: "update-dice-status",
+        diceId,
+        status: "active",
+      });
+    },
+    [checkIsDiceAlreadyTraced, dispatch, state.isTracing],
+  );
 
-  const handleOnTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    const touch = e.changedTouches?.[0];
+  const handleOnTouchStart: TouchEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      const touch = e.changedTouches?.[0];
 
-    if (!touch) {
-      toast.error("Cant trace the interaction!");
-      return;
-    }
+      if (!touch) return;
 
-    handleOnStartTrace(e);
-  };
+      handleOnStartTrace(e);
+    },
+    [handleOnStartTrace],
+  );
 
-  const handleOnTouchEnd: TouchEventHandler<HTMLDivElement> = async (e) => {
-    e.preventDefault();
-    await handleOnEndTrace();
-  };
+  const handleOnTouchEnd: TouchEventHandler<HTMLDivElement> = useCallback(
+    async (e) => {
+      e.preventDefault();
+      await handleOnEndTrace();
+    },
+    [handleOnEndTrace],
+  );
 
   return (
     <div
