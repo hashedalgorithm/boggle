@@ -108,8 +108,8 @@ const getInitialGameState = () => {
     currentPlayerId: uid,
     time: 3,
     gridSize: {
-      rows: 4,
-      columns: 4,
+      rows: 5,
+      columns: 5,
     },
     language: "en",
   } satisfies GameControllerState;
@@ -121,7 +121,7 @@ const RawContext = createContext<GameControllerContextState>({
 
 const reducer = (
   prevstate: GameControllerState,
-  actions: Actions
+  actions: Actions,
 ): GameControllerState => {
   switch (actions.type) {
     case "add-player": {
@@ -145,10 +145,13 @@ const reducer = (
         ...prevstate,
         players: Object.values(prevstate.players)
           .filter((player) => player.playerId !== actions.playerId)
-          .reduce((accumulator, currentValue) => {
-            accumulator[currentValue.playerId] = currentValue;
-            return accumulator;
-          }, {} as Record<string, TPlayer>),
+          .reduce(
+            (accumulator, currentValue) => {
+              accumulator[currentValue.playerId] = currentValue;
+              return accumulator;
+            },
+            {} as Record<string, TPlayer>,
+          ),
       };
     }
     case "upate-player-name": {
@@ -218,7 +221,7 @@ const reducer = (
             };
             return accumulator;
           },
-          {} as Record<string, TPlayer>
+          {} as Record<string, TPlayer>,
         ),
         currentPlayerId: firstPlayer.playerId,
       };
@@ -350,7 +353,7 @@ export const useGameContextUtils = () => {
 
   const pickNextPlayer = () => {
     return Object.values(state.players).find(
-      (player) => player.playerStatus === "waiting"
+      (player) => player.playerStatus === "waiting",
     );
   };
 
