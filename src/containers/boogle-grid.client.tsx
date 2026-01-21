@@ -10,7 +10,12 @@ import {
   useGameContextUtils,
 } from "@/contexts/game-controller-context";
 import { cn, getAttribute } from "@/lib/utils";
-import { MouseEventHandler, SyntheticEvent, TouchEventHandler } from "react";
+import {
+  MouseEventHandler,
+  SyntheticEvent,
+  TouchEventHandler,
+  useMemo,
+} from "react";
 import { toast } from "sonner";
 
 const BoogleGrid = () => {
@@ -19,6 +24,14 @@ const BoogleGrid = () => {
   const { getActivePlayer, addWordToPlayerInventory } = useGameContextUtils();
   const { getWordWithPath, checkIsDiceAlreadyTraced } =
     useBoogleGridContextUtils();
+
+  const sortedDices = useMemo(
+    () =>
+      Object.values(state.dices).sort((a, b) => {
+        return a.dicePosition.position - b.dicePosition.position;
+      }),
+    [state.dices],
+  );
 
   const handleOnStartTrace = (e: SyntheticEvent) => {
     if (state.isTracing) return;
@@ -62,6 +75,7 @@ const BoogleGrid = () => {
   };
 
   const handleOnTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
+    console.log("hello");
     e.preventDefault();
     if (!state.isTracing) return;
 
@@ -138,16 +152,9 @@ const BoogleGrid = () => {
       onMouseUp={handleOnMouseUp}
       onTouchMove={handleOnTouchMove}
     >
-      {Object.values(state.dices)
-        .sort((a, b) => {
-          return a.dicePosition.position - b.dicePosition.position;
-        })
-        .map((dice) => (
-          <Dice
-            key={`boogle-grid-client.dices.dice.${dice.diceId}`}
-            {...dice}
-          />
-        ))}
+      {sortedDices.map((dice) => (
+        <Dice key={`boogle-grid-client.dices.dice.${dice.diceId}`} {...dice} />
+      ))}
     </div>
   );
 };
